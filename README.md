@@ -15,6 +15,7 @@ cases. Some tasks are optional, feel free to decide if you want to work on them.
 #### H2 in memory DB:  
 After running project the h2 console is reachable with following address   
 `http://localhost:8080/h2-console/`  
+
 Driver class: org.h2.Driver  
 JDBC URL: jdbc:h2:mem:testdb  
 Username: sa  
