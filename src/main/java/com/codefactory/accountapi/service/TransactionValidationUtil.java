@@ -10,6 +10,10 @@ import java.util.Objects;
 
 public class TransactionValidationUtil {
 
+    //to hide constructor
+    private TransactionValidationUtil() {
+    }
+
     /**
      * validates if the amount can be transferred between 2 accounts
      * @param fromAccount

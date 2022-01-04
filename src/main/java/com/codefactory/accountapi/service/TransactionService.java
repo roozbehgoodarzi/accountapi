@@ -12,7 +12,6 @@ import com.codefactory.accountapi.service.exception.WithdrawValidationException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 
 import static com.codefactory.accountapi.service.TransactionValidationUtil.validateTransfer;
 import static com.codefactory.accountapi.service.TransactionValidationUtil.validateWithdraw;
@@ -31,6 +30,7 @@ public class TransactionService {
 
     /**
      * transfers amount between 2 accounts
+     *
      * @param from
      * @param to
      * @param amount
@@ -38,7 +38,7 @@ public class TransactionService {
      * @throws Exception
      */
     public TransactionDTO transfer(String from, String to, Long amount) throws TransferValidationException, AccountLockException, AccountNotFoundException {
-        if(from.equals(to)){
+        if (from.equals(to)) {
             throw new TransferValidationException("source and destination account must be different");
         }
         var fromAccount = accountRepository.findAccountByIban(from).orElseThrow(AccountNotFoundException::new);
@@ -62,6 +62,7 @@ public class TransactionService {
 
     /**
      * Deposits amount into an account
+     *
      * @param iban
      * @param amount
      * @return
@@ -82,6 +83,7 @@ public class TransactionService {
 
     /**
      * withdraws amount from an account
+     *
      * @param iban
      * @param amount
      * @return

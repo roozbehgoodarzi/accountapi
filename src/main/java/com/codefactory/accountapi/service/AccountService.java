@@ -1,5 +1,6 @@
 package com.codefactory.accountapi.service;
 
+import com.codefactory.accountapi.model.Account;
 import com.codefactory.accountapi.model.AccountBuilder;
 import com.codefactory.accountapi.model.AccountTypeEnum;
 import com.codefactory.accountapi.model.Director;
@@ -88,7 +89,23 @@ public class AccountService {
 
     public List<TransactionDTO> getTransactionHistory(String iban) throws AccountNotFoundException {
         var account = accountRepository.findAccountByIban(iban).orElseThrow(AccountNotFoundException::new);
-        var transactions = Stream.concat(account.getWithdraws().stream(), account.getDeposits().stream()).collect(Collectors.toList());
-        return transactions.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+        var transactions = Stream.concat(account.getWithdraws().stream(), account.getDeposits().stream())
+                .collect(Collectors.toList());
+        return transactions.stream().map(transactionMapper::toDto)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public AccountDTO assignReferenceAccount(String savingAccountIban, String checkingAccountIban) throws AccountNotFoundException, InvalidAccountTypeException {
+        Account checkingAccount = accountRepository.findAccountByIban(checkingAccountIban).orElseThrow(AccountNotFoundException::new);
+        if(!checkingAccount.getType().equals(AccountTypeEnum.CHECKING)){
+            throw new InvalidAccountTypeException("Reference Account must be of a checking type");
+        }
+        Account savingAccount = accountRepository.findAccountByIban(savingAccountIban).orElseThrow(AccountNotFoundException::new);
+        if(!savingAccount.getType().equals(AccountTypeEnum.SAVING)){
+            throw new InvalidAccountTypeException("Account must be of a saving type");
+        }
+        savingAccount.setReferenceAccount(checkingAccount);
+        return accountMapper.toDto(accountRepository.save(savingAccount));
     }
 }
